@@ -1,13 +1,11 @@
 services:
   - type: web
-    name: marksheetdb_user
+    name: marksheet-app
     env: docker
     plan: free
     dockerfilePath: ./Dockerfile
     autoDeploy: true
-
 databases:
   - name: marksheetdb
     plan: free
     databaseName: marksheetdb
-    user: postgres
