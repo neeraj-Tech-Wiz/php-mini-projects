@@ -1,7 +1,4 @@
 <?php
-// db.php - PostgreSQL Database Connection
-
-// Check if the DATABASE_URL environment variable is set by Render
 if (getenv('DATABASE_URL')) {
     $db_url = getenv('DATABASE_URL');
     $conn = pg_connect($db_url);
@@ -10,7 +7,6 @@ if (getenv('DATABASE_URL')) {
         die("Connection to Render database failed.");
     }
 } else {
-    // Fallback for local development
     $host = 'localhost';
     $dbname = 'school_db';
     $user = 'postgres';
@@ -23,7 +19,6 @@ if (getenv('DATABASE_URL')) {
     }
 }
 
-// SQL to create the table if it doesn't exist
 $createTableSql = "
     CREATE TABLE IF NOT EXISTS student_marks (
         id SERIAL PRIMARY KEY,
@@ -40,3 +35,4 @@ $createTableSql = "
 
 pg_query($conn, $createTableSql);
 ?>
+
