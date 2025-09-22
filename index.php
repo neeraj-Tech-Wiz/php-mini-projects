@@ -192,7 +192,7 @@ function displayCertificate($rollNo, $studentName, $s1, $m1, $s2, $m2, $s3, $m3)
             </table>
             <?php echo $grade; ?>
             <button class='print-btn' onclick='window.print()'>🖨️ Print Certificate</button>
-            <a href="marks.php" class="back-btn">⬅️ Go Back to Form</a>
+            <a href="index.php" class="back-btn">⬅️ Go Back to Form</a>
             <div class='footer'>Generated on <?php echo date("d M Y"); ?></div>
         </div>
     </body>
@@ -462,7 +462,7 @@ tr:nth-child(odd) { background: #ffffff; }
                 <h1>🎓 Student Marksheet Portal</h1>
                 <p>Enter your details to generate certificate</p>
             </div>
-            <form method="POST" action="marks.php">
+            <form method="POST" action="index.php">
                 <div class="student-info">
                     <input type="number" name="roll_no" placeholder="Roll Number" required class="form-input"><br>
                     <input type="text" name="student_name" placeholder="Student Name" required class="form-input"><br>
@@ -477,7 +477,7 @@ tr:nth-child(odd) { background: #ffffff; }
             </form>
             <div class="search-container">
                 <p>Already saved a record? Search here:</p>
-                <form method="GET" action="marks.php">
+                <form method="GET" action="index.php">
                     <div class="student-info">
                         <input type="number" name="search_roll_no" placeholder="Enter Roll Number" required class="form-input search-input">
                         <input type="submit" value="Search" class="search-btn">
@@ -556,4 +556,5 @@ if (isset($_POST['submit'])) {
     displayForm();
 }
 ?>
+
 
