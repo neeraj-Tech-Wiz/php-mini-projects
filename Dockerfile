@@ -1,16 +1,17 @@
-# Use official PHP image with PostgreSQL support
-FROM php:8.2-cli
+Use an official PHP image as the base
+FROM php:8.2-apache
 
-# Install PostgreSQL PDO extension
-RUN apt-get update && apt-get install -y libpq-dev \
-    && docker-php-ext-install pdo pdo_pgsql
+Install the PostgreSQL client libraries
+'libpq-dev' contains the development files needed for the 'pdo_pgsql' extension
+RUN apt-get update && apt-get install -y libpq-dev 
 
-# Copy app files
-WORKDIR /app
-COPY . .
+&& docker-php-ext-install pdo pdo_pgsql pgsql
 
-# Expose Render's port
-EXPOSE 10000
+Copy the source code into the container's web root
+COPY . /var/www/html/
 
-# Start PHP built-in server
-CMD ["php", "-S", "0.0.0.0:10000", "marks.php"]
+Enable the required Apache module for URL rewriting
+RUN a2enmod rewrite
+
+Expose port 80 to the outside world
+EXPOSE 80
