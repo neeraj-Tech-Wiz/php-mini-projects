@@ -1,8 +1,8 @@
 <?php
-// Include the database connection file
-include 'db.php';//
 
-// Function to calculate and get the grade
+include 'db.php';
+
+
 function getGrade($percentage) {
     if ($percentage > 75) {
         return "<div class='grade distinction'>Distinction 🏆</div>";
@@ -200,7 +200,7 @@ function displayCertificate($rollNo, $studentName, $s1, $m1, $s2, $m2, $s3, $m3)
     <?php
 }
 
-// Function to display the main form
+
 function displayForm($message = '') {
     ?>
     <!DOCTYPE html>
@@ -321,7 +321,7 @@ function displayForm($message = '') {
     align-items: flex-start;
     min-height: 100vh;
     box-sizing: border-box;
-    overflow-x: hidden;  /* prevent unwanted horizontal scroll */
+    overflow-x: hidden;  
 }
 
 .certificate { 
@@ -334,7 +334,7 @@ function displayForm($message = '') {
     box-shadow: 0 8px 30px rgba(0,0,0,0.2); 
     background: linear-gradient(145deg, #ffffff, #f3f7ff); 
     border: 6px solid #4b6cb7; 
-    overflow-x: auto;   /* table won’t break layout */
+    overflow-x: auto;   
 }
 
 .certificate-header { 
@@ -556,3 +556,4 @@ if (isset($_POST['submit'])) {
     displayForm();
 }
 ?>
+
