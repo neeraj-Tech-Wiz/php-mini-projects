@@ -7,7 +7,7 @@ services:
     autoDeploy: true
 
 databases:
-  - name: marksheet-db
+  - name: marksheetdb
     plan: free
-    databaseName: marksheet
+    databaseName: marksheetdb
     user: postgres
