@@ -1,39 +1,41 @@
 <?php
-// db.php - This file handles the database connection for both local and deployed environments.
+// db.php - Handles database connection for both Render (production) and local development.
 
-// Use the DATABASE_URL environment variable from Render if it exists
-if (isset($_SERVER['DATABASE_URL'])) {
-    $dbUrl = $_SERVER['DATABASE_URL'];
+// Check if DATABASE_URL is available (Render provides this)
+if (getenv('DATABASE_URL')) {
+    $dbUrl = getenv('DATABASE_URL');
     $dbinfo = parse_url($dbUrl);
 
     $host = $dbinfo['host'];
+    $port = $dbinfo['port'];
     $user = $dbinfo['user'];
     $password = $dbinfo['pass'];
-    $dbname = substr($dbinfo['path'], 1);
+    $dbname = ltrim($dbinfo['path'], '/');
 
-    // Use PDO to connect to the PostgreSQL database
+    // Use PDO with SSL required (Render needs sslmode=require)
     try {
-        $conn = new PDO("pgsql:host=$host;dbname=$dbname", $user, $password);
+        $conn = new PDO("pgsql:host=$host;port=$port;dbname=$dbname;sslmode=require", $user, $password);
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     } catch (PDOException $e) {
-        die("Connection failed: " . $e->getMessage());
+        die("❌ Connection to Render DB failed: " . $e->getMessage());
     }
 
 } else {
     // Local development credentials
     $host = 'localhost';
+    $port = 5432;
     $dbname = 'school_db';
     $user = 'postgres';
     $password = 'your_local_password'; // Replace with your local password
 
-    // Use pg_connect() for local development
-    $conn = pg_connect("host=$host port=5432 dbname=$dbname user=$user password=$password");
+    // Use pg_connect for local dev
+    $conn = pg_connect("host=$host port=$port dbname=$dbname user=$user password=$password");
     if (!$conn) {
-        die("Connection failed: " . pg_last_error());
+        die("❌ Local connection failed: " . pg_last_error($conn));
     }
 }
 
-// SQL to create the table if it doesn't exist
+// Create table if not exists
 $createTableSql = "
     CREATE TABLE IF NOT EXISTS student_marks (
         roll_no INT PRIMARY KEY,
@@ -47,14 +49,13 @@ $createTableSql = "
     );
 ";
 
-// Execute the query to create the table
-if (isset($conn) && $conn instanceof PDO) {
+if ($conn instanceof PDO) {
     try {
         $conn->exec($createTableSql);
     } catch (PDOException $e) {
-        die("Table creation failed: " . $e->getMessage());
+        die("❌ Table creation failed (PDO): " . $e->getMessage());
     }
-} elseif (isset($conn) && is_resource($conn)) {
+} elseif (is_resource($conn)) {
     pg_query($conn, $createTableSql);
 }
 ?>
