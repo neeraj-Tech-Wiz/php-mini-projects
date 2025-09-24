@@ -7,7 +7,7 @@ if (getenv('DATABASE_URL')) {
     $dbinfo = parse_url($dbUrl);
 
     $host = $dbinfo['host'];
-    $port = $dbinfo['port'];
+    $port = isset($dbinfo['port']) ? $dbinfo['port'] : 5432;
     $user = $dbinfo['user'];
     $password = $dbinfo['pass'];
     $dbname = ltrim($dbinfo['path'], '/');
@@ -59,3 +59,4 @@ if ($conn instanceof PDO) {
     pg_query($conn, $createTableSql);
 }
 ?>
+
