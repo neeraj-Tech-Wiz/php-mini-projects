@@ -494,7 +494,7 @@ tr:nth-child(odd) { background: #ffffff; }
 // Check for form submission or search query
 if (isset($_POST['submit'])) {
     $rollNo = $_POST['roll_no'];
-    $studentName = $_POST['student_name'];
+    $studentName = $_POST['name'];
     $s1 = $_POST['subject1'];
     $m1 = $_POST['marks1'];
     $s2 = $_POST['subject2'];
@@ -507,7 +507,7 @@ if (isset($_POST['submit'])) {
             INSERT INTO student_marks (roll_no,name, subject1, marks1, subject2, marks2, subject3, marks3)
             VALUES (:roll_no, :name, :s1, :m1, :s2, :m2, :s3, :m3)
             ON CONFLICT (roll_no) DO UPDATE SET
-                name = EXCLUDED.student_name,
+                name = EXCLUDED.name,
                 subject1 = EXCLUDED.subject1, marks1 = EXCLUDED.marks1,
                 subject2 = EXCLUDED.subject2, marks2 = EXCLUDED.marks2,
                 subject3 = EXCLUDED.subject3, marks3 = EXCLUDED.m3;
@@ -562,6 +562,7 @@ if (isset($_POST['submit'])) {
 }
 
 ?>
+
 
 
 
