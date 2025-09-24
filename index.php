@@ -504,10 +504,10 @@ if (isset($_POST['submit'])) {
 
     try {
         $insertSql = "
-            INSERT INTO student_marks (roll_no, student_name, subject1, marks1, subject2, marks2, subject3, marks3)
-            VALUES (:roll_no, :student_name, :s1, :m1, :s2, :m2, :s3, :m3)
+            INSERT INTO student_marks (roll_no,name, subject1, marks1, subject2, marks2, subject3, marks3)
+            VALUES (:roll_no, :name, :s1, :m1, :s2, :m2, :s3, :m3)
             ON CONFLICT (roll_no) DO UPDATE SET
-                student_name = EXCLUDED.student_name,
+                name = EXCLUDED.student_name,
                 subject1 = EXCLUDED.subject1, marks1 = EXCLUDED.marks1,
                 subject2 = EXCLUDED.subject2, marks2 = EXCLUDED.marks2,
                 subject3 = EXCLUDED.subject3, marks3 = EXCLUDED.m3;
@@ -516,7 +516,7 @@ if (isset($_POST['submit'])) {
         $stmt = $conn->prepare($insertSql);
         $stmt->execute([
             ':roll_no' => $rollNo,
-            ':student_name' => $studentName,
+            ':name' => $studentName,
             ':s1' => $s1, ':m1' => $m1,
             ':s2' => $s2, ':m2' => $m2,
             ':s3' => $s3, ':m3' => $m3
@@ -562,6 +562,7 @@ if (isset($_POST['submit'])) {
 }
 
 ?>
+
 
 
 
