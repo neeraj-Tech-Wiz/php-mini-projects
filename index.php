@@ -541,7 +541,7 @@ if (isset($_POST['submit'])) {
         if ($studentData) {
             displayCertificate(
                 $studentData['roll_no'],
-                $studentData['student_name'],
+                $studentData['name'],
                 $studentData['subject1'],
                 $studentData['marks1'],
                 $studentData['subject2'],
@@ -562,6 +562,7 @@ if (isset($_POST['submit'])) {
 }
 
 ?>
+
 
 
 
