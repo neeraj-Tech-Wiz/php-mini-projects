@@ -502,37 +502,42 @@ if (isset($_POST['submit'])) {
     $s3 = $_POST['subject3'];
     $m3 = $_POST['marks3'];
 
-    // Insert or update data in the database
-    $insertSql = "
-        INSERT INTO student_marks (roll_no, student_name, subject1, marks1, subject2, marks2, subject3, marks3)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-        ON CONFLICT (roll_no) DO UPDATE SET
-            student_name = EXCLUDED.student_name,
-            subject1 = EXCLUDED.subject1, marks1 = EXCLUDED.marks1,
-            subject2 = EXCLUDED.subject2, marks2 = EXCLUDED.marks2,
-            subject3 = EXCLUDED.subject3, marks3 = EXCLUDED.marks3;
-    ";
-    
-    $result = pg_query_params($conn, $insertSql, [
-        $rollNo, $studentName, $s1, $m1, $s2, $m2, $s3, $m3
-    ]);
+    try {
+        $insertSql = "
+            INSERT INTO student_marks (roll_no, student_name, subject1, marks1, subject2, marks2, subject3, marks3)
+            VALUES (:roll_no, :student_name, :s1, :m1, :s2, :m2, :s3, :m3)
+            ON CONFLICT (roll_no) DO UPDATE SET
+                student_name = EXCLUDED.student_name,
+                subject1 = EXCLUDED.subject1, marks1 = EXCLUDED.marks1,
+                subject2 = EXCLUDED.subject2, marks2 = EXCLUDED.marks2,
+                subject3 = EXCLUDED.subject3, marks3 = EXCLUDED.m3;
+        ";
 
-    if (!$result) {
-        displayForm("Error saving data: " . pg_last_error($conn));
-    } else {
+        $stmt = $conn->prepare($insertSql);
+        $stmt->execute([
+            ':roll_no' => $rollNo,
+            ':student_name' => $studentName,
+            ':s1' => $s1, ':m1' => $m1,
+            ':s2' => $s2, ':m2' => $m2,
+            ':s3' => $s3, ':m3' => $m3
+        ]);
+
         // Output the certificate
         displayCertificate($rollNo, $studentName, $s1, $m1, $s2, $m2, $s3, $m3);
+
+    } catch (PDOException $e) {
+        displayForm("Error saving data: " . $e->getMessage());
     }
 
 } elseif (isset($_GET['search_roll_no'])) {
     $searchRollNo = $_GET['search_roll_no'];
-    
-    // Search for student data in the database
-    $searchSql = "SELECT * FROM student_marks WHERE roll_no = $1";
-    $result = pg_query_params($conn, $searchSql, [$searchRollNo]);
-    
-    if ($result) {
-        $studentData = pg_fetch_assoc($result);
+
+    try {
+        $searchSql = "SELECT * FROM student_marks WHERE roll_no = :roll_no";
+        $stmt = $conn->prepare($searchSql);
+        $stmt->execute([':roll_no' => $searchRollNo]);
+        $studentData = $stmt->fetch(PDO::FETCH_ASSOC);
+
         if ($studentData) {
             displayCertificate(
                 $studentData['roll_no'],
@@ -545,16 +550,18 @@ if (isset($_POST['submit'])) {
                 $studentData['marks3']
             );
         } else {
-            // Student not found
             displayForm("Student with Roll No. " . htmlspecialchars($searchRollNo) . " not found.");
         }
-    } else {
-        displayForm("Error searching data: " . pg_last_error($conn));
+    } catch (PDOException $e) {
+        displayForm("Error searching data: " . $e->getMessage());
     }
+
 } else {
     // Show the initial form
     displayForm();
 }
+
 ?>
+
 
 
